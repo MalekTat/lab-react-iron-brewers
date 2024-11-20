@@ -1,4 +1,6 @@
-import { useState } from "react";
+import React , { useState } from "react";
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
 function AddBeerPage() {
   // State variables to store the values of the form inputs. You can leave these as they are.
@@ -29,12 +31,51 @@ function AddBeerPage() {
   // 3. Once the beer is created, navigate the user to the page showing the list of all beers.
 
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const attenuationLevelNum = Number(attenuationLevel);
+    const newBeer = {
+      name : name ,
+      tagline : tagline ,
+      description : description, 
+      image_url : imageUrl, 
+      first_brewed : firstBrewed , 
+      brewers_tips : brewersTips,
+      attenuation_level : attenuationLevelNum, 
+      contributed_by : contributedBy 
+    }
+
+
+    try {
+
+      const res = await axios.post('https://ih-beers-api2.herokuapp.com/beers/new', newBeer);
+      console.log(res)
+
+      if (res.status === 200) {
+          setName("");
+          setTagline("");
+          setDescription("");
+          setImageUrl("");
+          setFirstBrewed("");
+          setBrewersTips("");
+          setAttenuationLevel(0);
+          setContributedBy("");;
+          console.log("done")
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
 
   // Structure and the content of the page showing the form for adding a new beer. You can leave this as it is.
   return (
     <>
       <div className="d-inline-flex flex-column w-100 p-4">
-        <form>
+        <form onSubmit={handleSubmit}>
           <label>Name</label>
           <input
             className="form-control mb-4"
